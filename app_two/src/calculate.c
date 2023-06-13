@@ -1,6 +1,6 @@
 /*
  * Assessment 8/06  Linschoten 65ft
- * calculates collats up to limit of 10^6
+ * calculates collatz up to limit of 10^6 on standard desktop pc
  */
 
 #include <stdio.h>
@@ -9,7 +9,7 @@
 #include <math.h>
 
 #define MAX_ARRAY 1000000
-/// @brief basically a more memory optimized version would use the collies linked list as opposed to the array calc_unit
+/// @brief basically a  optimized version using linked list as opposed to the array calc_unit.
 
 typedef struct colli{
 	struct colli *previous;
