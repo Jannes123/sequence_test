@@ -1,5 +1,5 @@
 /*
- * Assessment 8/06  Linschoten 65ft
+ * Assessment 14/06  
  * calculates collatz up to limit of 10^6 on standard desktop pc
  */
 
@@ -9,13 +9,6 @@
 #include <math.h>
 
 #define MAX_ARRAY 1000000
-/// @brief basically a more memory optimized version would use the collies linked list as opposed to the array calc_unit
-
-typedef struct colli{
-	struct colli *previous;
-	struct colli *next;
-	uint64_t val;
-	} colliez;
 
 typedef struct table_seq_length{
 	uint64_t input_limit;
@@ -71,17 +64,16 @@ int main(int argc, char *argv[])
      char *in_ptr;
      char ns[ 20 ];
      uint64_t xn, raw_calc;
-     colliez work_list;
 
      // first process input
-     printf("len of input %d \n", argc);
-     printf("sizeof input 0 %lu \n", sizeof(argv[0]));
+     //printf("count  args %d \n", argc);
+     //printf("sizeof input 0 %lu \n", sizeof(argv[0]));
 
-     printf("sizeof input 1 %lu \n", sizeof(argv[1]));
+     //printf("sizeof input 1 %lu \n", sizeof(argv[1]));
      
-     printf("argv[0] : %12s \n", argv[0]);
-     printf("argv[1] : %12s \n", argv[1]);
-     printf("argv[2] : %12s \n", argv[2]);
+     //printf("argv[0] : %12s \n", argv[0]);
+     //printf("argv[1] : %12s \n", argv[1]);
+     //printf("argv[2] : %12s \n", argv[2]);
 
      printf("\n");
      if (argc != 2) {
@@ -90,13 +82,7 @@ int main(int argc, char *argv[])
 		printf("%s \n", in_limit);
 		int dud = atoi(in_limit);
 		in_limit_data = (uint64_t)dud;
-		printf("Enter the max iteration limit : ");
 		fflush(stdin);
-		scanf("%s \n", ns);
-		printf("%s \n", ns);
-		printf("\n");
-		dud = atoi(ns);
-		uint64_t max_iterations = (uint64_t) dud;
 	}else{
 		// commandline arguments present
 		printf("%15s", argv[1]);
@@ -112,7 +98,7 @@ int main(int argc, char *argv[])
      empiric_batch_size = param1*0.40;
      uint64_t empiric_batch_size_int = round(empiric_batch_size);
      uint64_t lower_limit = param1 - empiric_batch_size;
-     printf("empirically guessed lower limit : %lu \n", lower_limit);
+     printf("empirical guess at lowest value : %lu \n", lower_limit);
      uint64_t x = 0;
      // populate array to hold sequence length counter for every possible value lower than input
 	 if (param1>0) {
