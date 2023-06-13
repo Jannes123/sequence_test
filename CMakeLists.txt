@@ -10,7 +10,5 @@ project(Collies C CXX ASM)
 include_directories(include
 		src
 		)
-
 add_executable(Collies src/calculate.c)
-
-
+target_link_libraries(Collies m)
