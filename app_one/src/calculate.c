@@ -7,8 +7,9 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <math.h>
+#include "calculate.h"
 
-#define MAX_ARRAY 1000000
+#define MAX_ARRAY 80000000
 
 typedef struct table_seq_length{
 	uint64_t input_limit;
@@ -37,25 +38,17 @@ uint64_t calculate(uint64_t u_limit_in) {
 	while (xn != 1)
 	{
 		if (xn % 2 == 0){
-			//printf("%lu \t \t even ", xn);
 			xn = even(xn);
 		}
           	else{
-			//printf("%lu \t \t odd \n ", xn);
 			xn = odd(xn);
 		}
 		s_length_counter++;
     }
 
-	//printf("%lu --- end \n \n", xn);
 	return s_length_counter;
 }
 
-
-/*
- * Commandline application called with one argument
- * eg ./Colliez 3
- */
 int main(int argc, char *argv[])
 {
      int a, n;
@@ -65,15 +58,7 @@ int main(int argc, char *argv[])
      char ns[ 20 ];
      uint64_t xn, raw_calc;
 
-     // first process input
-     //printf("count  args %d \n", argc);
-     //printf("sizeof input 0 %lu \n", sizeof(argv[0]));
-
-     //printf("sizeof input 1 %lu \n", sizeof(argv[1]));
-     
-     //printf("argv[0] : %12s \n", argv[0]);
-     //printf("argv[1] : %12s \n", argv[1]);
-     //printf("argv[2] : %12s \n", argv[2]);
+     // process input
 
      printf("\n");
      if (argc != 2) {
@@ -107,10 +92,8 @@ int main(int argc, char *argv[])
      	while (x<=empiric_batch_size_int) {
 			uint64_t counter_res = param1 - x;
      		raw_calc = calculate(counter_res);
-			//printf("raw calc : %lu \n", raw_calc);
 			calc_unit add_me = { counter_res, raw_calc};
 			allresult[x] = add_me;
-			//printf("%lu - ", allresult[x].input_limit);
 			x++;
      	}
 		printf("x:  %lu ", x);

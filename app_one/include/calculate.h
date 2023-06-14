@@ -11,9 +11,10 @@
 extern "C" {
 #endif
 
-uint64_t calculate(u_limit_in uint64_t);
 uint64_t odd(uint64_t x);
 uint64_t even(uint64_t x);
+uint64_t calculate(uint64_t u_limit_in);
+
 
 #ifdef __cplusplus
 }

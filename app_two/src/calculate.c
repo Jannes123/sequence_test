@@ -1,29 +1,11 @@
 /*
  * Assessment 8/06  Linschoten 65ft
  * calculates collatz up to limit of 10^6 on standard desktop pc
+ * 
+ * optionally increase stack size on linux
+ * ulimit -t 300 -l 4086688 -s 81920
  */
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <math.h>
-
-#define MAX_ARRAY 1000000
-/// @brief basically a  optimized version using linked list as opposed to the array calc_unit.
-
-
-typedef struct table_seq_length{
-	uint64_t input_limit;
-	uint64_t sequence_length;
-} calc_unit;
-
-typedef struct colli{
-	struct colli *previous;
-	struct colli *next;
-	uint64_t val;
-	} colliez;
-
-calc_unit allresult[MAX_ARRAY];
+#include "calculate.h"
 
 uint64_t odd(uint64_t x){
 	return x*3 + 1;
@@ -34,15 +16,14 @@ uint64_t even(uint64_t x){
 }
 
 /*
- *Iterative process until sequence converges to 1 .
- *
+ * Iterative process until sequence converges to 1.
  */
-
-uint64_t calculate(uint64_t u_limit_in) {
-	//upper limit iteratively 
+colliez* calculate(uint64_t u_limit_in) {
+	//keep track of biggest number and sequence counter
 	uint64_t xn = u_limit_in;
 	uint64_t s_length_counter = 0;
 	uint64_t max_nr = 0;
+	colliez *computed_data_ptr = malloc(sizeof(colliez)+1);
 	while (xn != 1) {
 		if (xn % 2 == 0) {
 			//printf("%lu \t \t even ", xn);
@@ -59,7 +40,14 @@ uint64_t calculate(uint64_t u_limit_in) {
     }
 	//printf("%lu --- end \n \n", xn);
 	printf("%lu  max \n", max_nr);
-	return s_length_counter;
+	
+	if (computed_data_ptr!=NULL) {
+		printf("oops");
+	}
+	printf("OK");
+	colliez s_computed_data = {u_limit_in, max_nr, s_length_counter};
+	computed_data_ptr = &s_computed_data;
+	return computed_data_ptr;
 }
 
 
@@ -74,9 +62,8 @@ int main(int argc, char *argv[])
      uint64_t in_limit_data;
      char *in_ptr;
      char ns[ 20 ];
-     uint64_t xn, raw_calc;
-     colliez *work_list_head;
-
+     uint64_t xn;
+	 colliez * raw_calc;
      // first process input
 
      printf("\n");
@@ -84,7 +71,7 @@ int main(int argc, char *argv[])
      	printf("Enter the value of the upper limit : ");
      	scanf("%s", in_limit);
 		printf("%s \n", in_limit);
-		int dud = atoi(in_limit);
+		long dud = atoi(in_limit);
 		in_limit_data = (uint64_t)dud;
 		printf("Enter the max iteration limit : ");
 		fflush(stdin);
@@ -97,7 +84,7 @@ int main(int argc, char *argv[])
 	}else{
 		// commandline arguments present
 		printf("%15s", argv[1]);
-		int dud = atoi(argv[1]);
+		long dud = atoi(argv[1]);
 		in_limit_data = (uint64_t)dud;
      }
      fflush(stdin);
@@ -109,32 +96,37 @@ int main(int argc, char *argv[])
      empiric_batch_size = cmd_user_arg1*0.40;
      uint64_t empiric_batch_size_int = round(empiric_batch_size);
      uint64_t lower_limit = cmd_user_arg1 - empiric_batch_size;
-     printf("empirically guessed lower limit : %lu \n", lower_limit);
+     printf("empirical guess of lower limit with longest seqence chain : %lu \n", lower_limit);
      uint64_t x = 0;
      // populate array to hold sequence length counter for every possible value lower than input
 	 if (cmd_user_arg1>0) {
 		printf("if");
-		//just to be safe include integer on limit of empiric approximation.
+		uint64_t new_val = 0;
+		uint64_t old_val = 0;
+		//just to be safe include one more integer on limit of empiric approximation.
+		uint64_t counter_res;
      	while (x<=empiric_batch_size_int) {
-			uint64_t counter_res = cmd_user_arg1 - x;
+			counter_res = cmd_user_arg1 - x;
+			if (raw_calc!=NULL) {
+				free(raw_calc);
+				}
      		raw_calc = calculate(counter_res);
-			calc_unit add_me = { counter_res, raw_calc};
-			allresult[x] = add_me;
+			// compare results and keep longest
+			new_val = raw_calc->count_val;
+			uint64_t largest_start_sequence;
+			if (new_val>old_val){
+				old_val = new_val;
+				largest_start_sequence = raw_calc->start_seq;
+				//keep track of ptr to resulting struct
+			}
 			x++;
      	}
+		printf("x:  %lu ", new_val);
 		printf("x:  %lu ", x);
      }
      printf("---");
 	 // sort array according to sequence_length
-	 uint64_t len_temp = 0;
-	 int j;
-	 for (j=0; j<empiric_batch_size_int; j++) {
-		if(len_temp < allresult[j].sequence_length){
-			printf("sequence length : %lu \n", allresult[j].sequence_length);
-			len_temp = allresult[j].sequence_length;
-		}
-	 }
-	 printf("Finished. Longest sequence is : %lu", len_temp);
+	 printf("Finished. Longest sequence is : %lu", raw_calc->start_seq);
      
      return 0;
 // <----->
