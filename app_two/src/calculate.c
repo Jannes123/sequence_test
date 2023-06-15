@@ -23,14 +23,12 @@ colliez* calculate(uint64_t u_limit_in) {
 	uint64_t xn = u_limit_in;
 	uint64_t s_length_counter = 0;
 	uint64_t max_nr = 0;
-	colliez *computed_data_ptr = malloc(sizeof(colliez)+1);
+	colliez *computed_data_ptr = malloc(sizeof(colliez));
 	while (xn != 1) {
 		if (xn % 2 == 0) {
-			//printf("%lu \t \t even ", xn);
 			xn = even(xn);
 		}
         else{
-			//printf("%lu \t \t odd \n ", xn);
 			xn = odd(xn);
 			if (xn>=max_nr) {
 				max_nr = xn;
@@ -38,15 +36,12 @@ colliez* calculate(uint64_t u_limit_in) {
 		}
 		s_length_counter++;
     }
-	//printf("%lu --- end \n \n", xn);
-	printf("%lu  max \n", max_nr);
-	
-	if (computed_data_ptr!=NULL) {
-		printf("oops");
+	if (computed_data_ptr==NULL) {
+		printf("null ptr");
 	}
-	printf("OK");
-	colliez s_computed_data = {u_limit_in, max_nr, s_length_counter};
-	computed_data_ptr = &s_computed_data;
+	computed_data_ptr->start_seq = u_limit_in;
+	computed_data_ptr->max_nr = max_nr;
+	computed_data_ptr->count_val = s_length_counter;
 	return computed_data_ptr;
 }
 
@@ -60,47 +55,38 @@ int main(int argc, char *argv[])
      int a, n;
      char in_limit[ 20 ];
      uint64_t in_limit_data;
-     char *in_ptr;
      char ns[ 20 ];
      uint64_t xn;
-	 colliez * raw_calc;
-     // first process input
+	 colliez *raw_calc;
+	 raw_calc = NULL;
 
-     printf("\n");
+     // first process user input
      if (argc != 2) {
-     	printf("Enter the value of the upper limit : ");
+     	printf("\n Enter the value of the upper limit : ");
      	scanf("%s", in_limit);
-		printf("%s \n", in_limit);
+		printf("\n %s \n", in_limit);
 		long dud = atoi(in_limit);
 		in_limit_data = (uint64_t)dud;
-		printf("Enter the max iteration limit : ");
 		fflush(stdin);
-		scanf("%s \n", ns);
-		printf("%s \n", ns);
 		printf("\n");
-		dud = atoi(ns);
-		uint64_t max_iterations = (uint64_t) dud;
-		scanf("%s \n", ns);
 	}else{
-		// commandline arguments present
-		printf("%15s", argv[1]);
 		long dud = atoi(argv[1]);
 		in_limit_data = (uint64_t)dud;
      }
-     fflush(stdin);
      
-     uint64_t cmd_user_arg1;
-     cmd_user_arg1 = (uint64_t) in_limit_data;
+     uint64_t cmd_user_arg1 = (uint64_t) in_limit_data;
      // 40% of input value. Used to calculate the test range for longest sequence length.
-     float empiric_batch_size;
-     empiric_batch_size = cmd_user_arg1*0.40;
+     float empiric_batch_size = cmd_user_arg1*0.40;
      uint64_t empiric_batch_size_int = round(empiric_batch_size);
      uint64_t lower_limit = cmd_user_arg1 - empiric_batch_size;
-     printf("empirical guess of lower limit with longest seqence chain : %lu \n", lower_limit);
+	 printf("Calculating Collatz: \n");
+	 printf("---");
+     printf("\nempirical guess of lower limit with longest sequence chain : %lu \n", lower_limit);
      uint64_t x = 0;
-     // populate array to hold sequence length counter for every possible value lower than input
+     // run through inputs high-low
 	 if (cmd_user_arg1>0) {
-		printf("if");
+		colliez *final = malloc(sizeof(colliez));
+		uint64_t largest_start_sequence;
 		uint64_t new_val = 0;
 		uint64_t old_val = 0;
 		//just to be safe include one more integer on limit of empiric approximation.
@@ -111,23 +97,20 @@ int main(int argc, char *argv[])
 				free(raw_calc);
 				}
      		raw_calc = calculate(counter_res);
-			// compare results and keep longest
 			new_val = raw_calc->count_val;
-			uint64_t largest_start_sequence;
-			if (new_val>old_val){
+			if (new_val>old_val) {
 				old_val = new_val;
 				largest_start_sequence = raw_calc->start_seq;
 				//keep track of ptr to resulting struct
+				final = raw_calc;
+				raw_calc = NULL;
 			}
 			x++;
      	}
-		printf("x:  %lu ", new_val);
-		printf("x:  %lu ", x);
-     }
-     printf("---");
-	 // sort array according to sequence_length
-	 printf("Finished. Longest sequence is : %lu", raw_calc->start_seq);
-     
+		printf("largest value in sequence :  %lu \n", final->max_nr);
+		printf("start :  %lu \n", final->start_seq);
+		printf("steps :  %lu \n", final->count_val);
+		printf("\nFinished. \nLongest sequence is : %lu \n \n", final->count_val);
+     }	 
      return 0;
-// <----->
 }

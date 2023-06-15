@@ -2,11 +2,6 @@
  * Assessment 14/06  
  * calculates collatz up to limit of 10^6 on standard desktop pc
  */
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <math.h>
 #include "calculate.h"
 
 #define MAX_ARRAY 80000000
@@ -64,13 +59,13 @@ int main(int argc, char *argv[])
      if (argc != 2) {
      	printf("Enter the value of the upper limit : ");
      	scanf("%s", in_limit);
-		printf("%s \n", in_limit);
+		//printf("%s \n", in_limit);
 		int dud = atoi(in_limit);
 		in_limit_data = (uint64_t)dud;
 		fflush(stdin);
 	}else{
 		// commandline arguments present
-		printf("%15s", argv[1]);
+		//printf("%15s \n", argv[1]);
 		int dud = atoi(argv[1]);
 		in_limit_data = (uint64_t)dud;
      }
@@ -83,11 +78,13 @@ int main(int argc, char *argv[])
      empiric_batch_size = param1*0.40;
      uint64_t empiric_batch_size_int = round(empiric_batch_size);
      uint64_t lower_limit = param1 - empiric_batch_size;
-     printf("empirical guess at lowest value : %lu \n", lower_limit);
+
+	 printf("Calculating Collatz: \n");
+	 printf("---");
+     printf("\nempirical guess at lowest value : %lu \n", lower_limit);
      uint64_t x = 0;
      // populate array to hold sequence length counter for every possible value lower than input
 	 if (param1>0) {
-		printf("if");
 		//just to be safe include integer (<=) on limit of empiric approximation.
      	while (x<=empiric_batch_size_int) {
 			uint64_t counter_res = param1 - x;
@@ -96,22 +93,21 @@ int main(int argc, char *argv[])
 			allresult[x] = add_me;
 			x++;
      	}
-		printf("x:  %lu ", x);
      }
-     printf("---");
 	 // sort array according to sequence_length
 	 uint64_t len_temp = 0;
-	 int j;
+	 long j, final;
 	 for (j=0; j<empiric_batch_size_int; j++) {
 		//printf(" j : %d", j);
 		//printf(" j : %lu", allresult[j].sequence_length);
 		if(len_temp < allresult[j].sequence_length){
 			//printf("len_temp: %lu \n", len_temp);
-			printf("sequence length : %lu \n", allresult[j].sequence_length);
+			//printf("sequence length : %lu \n", allresult[j].sequence_length);
 			len_temp = allresult[j].sequence_length;
+			final = j;
 		}
 	 }
-	 printf("Finished. Longest sequence is : %lu", len_temp);
-     
+	 printf("Answer: start value of longest sequence : %lu", allresult[final].input_limit);
+	 printf("\nFinished. \nLongest sequence is : %lu steps.\n", len_temp);
      return 0;
 }
