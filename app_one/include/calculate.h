@@ -1,6 +1,6 @@
 /*
  *
- * Assessment 08/06
+ * Assessment
  */
 
 #ifndef _CALCULATE_H

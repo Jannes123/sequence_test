@@ -1,5 +1,5 @@
 /*
- * Assessment 8/06  Linschoten 65ft
+ * Assessment  Linschoten 65ft
  * calculates collatz up to limit of 10^6 on standard desktop pc
  * 
  * optionally increase stack size on linux

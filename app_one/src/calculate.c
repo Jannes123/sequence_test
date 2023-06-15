@@ -1,5 +1,5 @@
 /*
- * Assessment 14/06  
+ * Assessment
  * calculates collatz up to limit of 10^6 on standard desktop pc
  */
 #include "calculate.h"
