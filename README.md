@@ -5,7 +5,7 @@ cd build/
 make
 ./Collies 100000000```
 
-### Example output program two
+## Example output program two
 ```/build-12:55>./Collies 
 
  Enter the value of the upper limit : 40000
