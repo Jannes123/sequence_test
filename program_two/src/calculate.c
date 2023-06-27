@@ -7,17 +7,17 @@
 #define MAX_ARRAY 80000000
 
 typedef struct table_seq_length{
-	uint64_t input_limit;
-	uint64_t sequence_length;
+	unsigned long input_limit;
+	unsigned long sequence_length;
 } calc_unit;
 
 calc_unit allresult[MAX_ARRAY];
 
-uint64_t odd(uint64_t x){
+unsigned long odd(unsigned long x){
 	return x*3 + 1;
 }
 
-uint64_t even(uint64_t x){
+unsigned long even(unsigned long x){
 	return x/2;
 }
 
@@ -26,10 +26,10 @@ uint64_t even(uint64_t x){
  * 
  */
 
-uint64_t calculate(uint64_t u_limit_in) {
+unsigned long calculate(unsigned long u_limit_in) {
 	//upper limit iteratively 
-	uint64_t xn = u_limit_in;
-	uint64_t s_length_counter = 0;
+	unsigned long xn = u_limit_in;
+	unsigned long s_length_counter = 0;
 	while (xn != 1)
 	{
 		if (xn % 2 == 0){
@@ -48,10 +48,10 @@ int main(int argc, char *argv[])
 {
      int a, n;
      char in_limit[ 20 ];
-     uint64_t in_limit_data;
+     unsigned long in_limit_data;
      char *in_ptr;
      char ns[ 20 ];
-     uint64_t xn, raw_calc;
+     unsigned long xn, raw_calc;
 
      // process input
 
@@ -61,33 +61,33 @@ int main(int argc, char *argv[])
      	scanf("%s", in_limit);
 		//printf("%s \n", in_limit);
 		int dud = atoi(in_limit);
-		in_limit_data = (uint64_t)dud;
+		in_limit_data = (unsigned long)dud;
 		fflush(stdin);
 	}else{
 		// commandline arguments present
 		//printf("%15s \n", argv[1]);
 		int dud = atoi(argv[1]);
-		in_limit_data = (uint64_t)dud;
+		in_limit_data = (unsigned long)dud;
      }
      fflush(stdin);
      
-     uint64_t param1;
-     param1 = (uint64_t) in_limit_data;
+     unsigned long param1;
+     param1 = (unsigned long) in_limit_data;
      // 40% of input value. Used to calculate the test range for longest sequence length.
      float empiric_batch_size;
      empiric_batch_size = param1*0.40;
-     uint64_t empiric_batch_size_int = round(empiric_batch_size);
-     uint64_t lower_limit = param1 - empiric_batch_size;
+     unsigned long empiric_batch_size_int = round(empiric_batch_size);
+     unsigned long lower_limit = param1 - empiric_batch_size;
 
 	 printf("Calculating Collatz: \n");
 	 printf("---");
      printf("\nempirical guess at lowest value : %lu \n", lower_limit);
-     uint64_t x = 0;
+     unsigned long x = 0;
      // populate array to hold sequence length counter for every possible value lower than input
 	 if (param1>0) {
 		//just to be safe include integer (<=) on limit of empiric approximation.
      	while (x<=empiric_batch_size_int) {
-			uint64_t counter_res = param1 - x;
+			unsigned long counter_res = param1 - x;
      		raw_calc = calculate(counter_res);
 			calc_unit add_me = { counter_res, raw_calc};
 			allresult[x] = add_me;
@@ -95,7 +95,7 @@ int main(int argc, char *argv[])
      	}
      }
 	 // sort array according to sequence_length
-	 uint64_t len_temp = 0;
+	 unsigned long len_temp = 0;
 	 long j, final;
 	 for (j=0; j<empiric_batch_size_int; j++) {
 		//printf(" j : %d", j);

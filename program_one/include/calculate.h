@@ -6,7 +6,9 @@
 #ifndef _CALCULATE_H
 #define _CALCULATE_H
 
-
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -14,14 +16,18 @@
 #include <math.h>
 
 typedef struct colli{
-	uint64_t start_seq;
-	uint64_t max_nr;
-	uint64_t count_val;
+	unsigned long start_seq;
+	unsigned long max_nr;
+	unsigned long count_val;
 	} colliez;
 
-uint64_t odd(uint64_t x);
-uint64_t even(uint64_t x);
-colliez * calculate(uint64_t u_limit_in);
+unsigned long odd(unsigned long x);
+unsigned long even(unsigned long x);
+colliez calculate(unsigned long u_limit_in);
+void colliez_processor(unsigned long cua, unsigned long lower_limit);
 
+#ifdef __cplusplus
+}
+#endif
 
 #endif

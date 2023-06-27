@@ -11,9 +11,9 @@
 #include <stdint.h>
 #include <math.h>
 
-uint64_t odd(uint64_t x);
-uint64_t even(uint64_t x);
-uint64_t calculate(uint64_t u_limit_in);
+unsigned long odd(unsigned long x);
+unsigned long even(unsigned long x);
+unsigned long calculate(unsigned long u_limit_in);
 
 
 #endif
