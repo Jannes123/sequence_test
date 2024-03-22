@@ -1,113 +1,163 @@
 /*
- * Assessment
+ *
  * calculates collatz up to limit of 10^6 on standard desktop pc
+ * ./Collles 1000
  */
 #include "calculate.h"
+#include <limits.h>
 
-#define MAX_ARRAY 80000000
+#define JMAX_ARRAY 30000
 
-typedef struct table_seq_length{
-	unsigned long input_limit;
-	unsigned long sequence_length;
-} calc_unit;
 
-calc_unit allresult[MAX_ARRAY];
+bigtype max_array = JMAX_ARRAY;
 
-unsigned long odd(unsigned long x){
-	return x*3 + 1;
+struct Point{
+	bigtype step_count;
+	bigtype input_val;
+	struct Point *nexty;
+};
+
+typedef struct Point my_point;
+
+bigtype odd(bigtype x)
+{
+	return x * 3ULL + 1ULL;
 }
 
-unsigned long even(unsigned long x){
-	return x/2;
+bigtype even(bigtype x)
+{
+	return x / 2ULL;
 }
 
 /*
- *Iterative process until sequence resolves or until 200 000 steps are reached.
- * 
+ *Iterative process until sequence resolves.
  */
 
-unsigned long calculate(unsigned long u_limit_in) {
-	//upper limit iteratively 
-	unsigned long xn = u_limit_in;
-	unsigned long s_length_counter = 0;
+bigtype calculate(bigtype u_limit_in, bigtype a_r[])
+{
+	// upper limit iteratively
+	bigtype xn = u_limit_in;
+	bigtype s_length_counter = 0ULL;
 	while (xn != 1)
 	{
-		if (xn % 2 == 0){
+		// save all series values and  steps calculated
+		// check if previous calculated data matches
+		// every xn has unique remaining series associated with it, stored in a_r .
+		bigtype arxn = a_r[xn];
+		printf("%lu . ", arxn);
+		if (a_r[xn] != 0ULL)
+		{
+			bigtype z = a_r[xn] + s_length_counter;
+			printf("\n--\n%lu \n", xn);
+			printf("optimal \n");
+			return z;
+		}
+		else
+		{
+			a_r[xn] = s_length_counter;
+		}
+		if (xn % 2 == 0)
+		{
 			xn = even(xn);
 		}
-          	else{
+		else
+		{
 			xn = odd(xn);
 		}
 		s_length_counter++;
-    }
-
+	}
 	return s_length_counter;
 }
 
-int main(int argc, char *argv[])
-{
-     int a, n;
-     char in_limit[ 20 ];
-     unsigned long in_limit_data;
-     char *in_ptr;
-     char ns[ 20 ];
-     unsigned long xn, raw_calc;
+int main(int argc, char *argv[]) {
+	char in_limit[20];
+	long in_limit_data;
+	long raw_calc;
+	// process input
+	printf("---%lu ---\n", max_array);
+	printf("size of struct Point with two bigtype fields : %lu", sizeof(my_point));
+	
 
-     // process input
-
-     printf("\n");
-     if (argc != 2) {
-     	printf("Enter the value of the upper limit : ");
-     	scanf("%s", in_limit);
-		//printf("%s \n", in_limit);
-		int dud = atoi(in_limit);
-		in_limit_data = (unsigned long)dud;
+	printf("\n");
+	if (argc != 2) {
+		printf("Enter the value of the upper limit : ");
+		scanf("%s ", in_limit);
+		long dud = atoi(in_limit);
+		in_limit_data = (long)dud;
 		fflush(stdin);
-	}else{
-		// commandline arguments present
-		//printf("%15s \n", argv[1]);
-		int dud = atoi(argv[1]);
-		in_limit_data = (unsigned long)dud;
-     }
-     fflush(stdin);
-     
-     unsigned long param1;
-     param1 = (unsigned long) in_limit_data;
-     // 40% of input value. Used to calculate the test range for longest sequence length.
-     float empiric_batch_size;
-     empiric_batch_size = param1*0.40;
-     unsigned long empiric_batch_size_int = round(empiric_batch_size);
-     unsigned long lower_limit = param1 - empiric_batch_size;
+	}
+	else {
+		long dud = atoi(argv[1]);
+		in_limit_data = (long)dud;
+		fflush(stdin);
+	}
 
-	 printf("Calculating Collatz: \n");
-	 printf("---");
-     printf("\nempirical guess at lowest value : %lu \n", lower_limit);
-     unsigned long x = 0;
-     // populate array to hold sequence length counter for every possible value lower than input
-	 if (param1>0) {
-		//just to be safe include integer (<=) on limit of empiric approximation.
-     	while (x<=empiric_batch_size_int) {
-			unsigned long counter_res = param1 - x;
-     		raw_calc = calculate(counter_res);
-			calc_unit add_me = { counter_res, raw_calc};
-			allresult[x] = add_me;
+	bigtype param1;
+	param1 = (bigtype)in_limit_data;
+
+	// 40% of input value. Used to calculate the test range for longest sequence.
+	float empiric_batch_size;
+	empiric_batch_size = param1 * 0.40;
+	bigtype empiric_batch_size_int = (bigtype)round(empiric_batch_size);
+	bigtype lower_limit = param1 - empiric_batch_size_int;
+
+	printf("Calculating Collatz: \n");
+	printf("---");
+	printf("\nempirical guess at lowest value : %lu \n", lower_limit);
+
+	bigtype allresult[max_array];
+	//my_point *arr = (bigtype*)malloc(sizeof(my_point)*100000000ULL);
+	my_point *starti = malloc(sizeof(my_point));
+	my_point *endi = starti;
+	if (param1 >= 1) {
+		long ie;
+		printf("\n---------------");
+		printf("\n--Calculating--");
+
+		bigtype x = 0ULL;
+		bigtype counter_res = 0ULL;
+		// calc and save to array
+		while (x < empiric_batch_size_int) {
+			printf("%lu ", x);
+			counter_res = param1 - x;
+			//do pointer thingy
+			my_point *answer = malloc(sizeof(my_point));
+			raw_calc = calculate(counter_res, allresult);
+			allresult[x] = raw_calc;
 			x++;
-     	}
-     }
-	 // sort array according to sequence_length
-	 unsigned long len_temp = 0;
-	 long j, final;
-	 for (j=0; j<empiric_batch_size_int; j++) {
-		//printf(" j : %d", j);
-		//printf(" j : %lu", allresult[j].sequence_length);
-		if(len_temp < allresult[j].sequence_length){
-			//printf("len_temp: %lu \n", len_temp);
-			//printf("sequence length : %lu \n", allresult[j].sequence_length);
-			len_temp = allresult[j].sequence_length;
+		}
+		// results_pointer = NULL;
+		// free(results_pointer);
+	}
+	bigtype len_temp = 0ULL;
+	bigtype final;
+	bigtype j;
+	for (j = 0ULL; j < empiric_batch_size_int; j++) {
+		if (len_temp < allresult[j]) {
+			printf("sequence length : %lu \n", allresult[j]);
+			len_temp = allresult[j];
 			final = j;
 		}
-	 }
-	 printf("Answer: start value of longest sequence : %lu", allresult[final].input_limit);
-	 printf("\nFinished. \nLongest sequence is : %lu steps.\n", len_temp);
-     return 0;
+	}
+	printf("Answer: start value of longest sequence : %lu", allresult[final]);
+	printf("\nFinished. \nLongest sequence is : %lu steps.\n", len_temp);
+	printf("\nMore info: \nMaksimum values of different base types: %lu\n", len_temp);
+	
+	printf("CHAR_BIT    :   %d\n", CHAR_BIT);
+    printf("CHAR_MAX    :   %d\n", CHAR_MAX);
+    printf("CHAR_MIN    :   %d\n", CHAR_MIN);
+    printf("INT_MAX     :   %d\n", INT_MAX);
+    printf("INT_MIN     :   %d\n", INT_MIN);
+    printf("LONG_MAX    :   %ld\n", (long) LONG_MAX);
+    printf("LONG_MIN    :   %ld\n", (long) LONG_MIN);
+    printf("SCHAR_MAX   :   %d\n", SCHAR_MAX);
+    printf("SCHAR_MIN   :   %d\n", SCHAR_MIN);
+    printf("SHRT_MAX    :   %d\n", SHRT_MAX);
+    printf("SHRT_MIN    :   %d\n", SHRT_MIN);
+    printf("UCHAR_MAX   :   %d\n", UCHAR_MAX);
+    printf("UINT_MAX    :   %u\n", (unsigned int) UINT_MAX);
+    printf("ULONG_MAX   :   %lu\n", (long) ULONG_MAX);
+    printf("USHRT_MAX   :   %d\n", (unsigned short) USHRT_MAX);
+
+	return 0;
 }

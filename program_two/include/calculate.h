@@ -11,9 +11,11 @@
 #include <stdint.h>
 #include <math.h>
 
-unsigned long odd(unsigned long x);
-unsigned long even(unsigned long x);
-unsigned long calculate(unsigned long u_limit_in);
+typedef uint64_t bigtype;
+
+bigtype odd(bigtype x);
+bigtype even(bigtype x);
+bigtype calculate(bigtype u_limit_in, bigtype a_r[]);
 
 
 #endif

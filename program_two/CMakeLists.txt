@@ -9,5 +9,12 @@ project(Collies C)
 include_directories(include
 		src
 		)
+include(CTest)
+add_compile_options(-Wall)
+add_compile_options(-fsanitize=address)
+add_link_options(-fsanitize=address)
+add_link_options(-Wall)
 add_executable(Collies src/calculate.c)
 target_link_libraries(Collies m)
+
+add_test(example_test Collies)
